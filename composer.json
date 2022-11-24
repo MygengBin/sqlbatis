@@ -14,5 +14,6 @@
         }
     ],
     "minimum-stability": "alpha",
-    "require": {}
+    "require": {},
+    "license": "MIT"
 }
