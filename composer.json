@@ -1,0 +1,18 @@
+{
+    "name": "gengbin/sqlbatis",
+    "description": "This is a tool help you better write sql",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Gengbin\\Sqlbatis\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "gengbin",
+            "email": "1371103410@qq.com"
+        }
+    ],
+    "minimum-stability": "alpha",
+    "require": {}
+}
