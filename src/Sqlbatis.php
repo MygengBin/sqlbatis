@@ -1,8 +1,9 @@
 <?php
 
 namespace Gengbin\Sqlbatis;
-
-abstract class Sqlbatis{
+use PDO;
+use PDOException;
+abstract class Sqlbatis implements SqlbatisInterface {
     abstract function construct($connectData='',$userName='',$userPassword=''):array;
 
     function resource(): array
