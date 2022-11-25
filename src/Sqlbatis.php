@@ -2,16 +2,8 @@
 
 namespace Gengbin\Sqlbatis;
 
-class Sqlbatis{
-    private $connectData = '';
-    private $userName = '';
-    private $userPassword = '';
-    function __construct($connectData='',$userName='',$userPassword='')
-    {
-        $this->connectData=$connectData;
-        $this->userName=$userName;
-        $this->userPassword=$userPassword;
-    }
+abstract class Sqlbatis{
+    abstract function construct($connectData='',$userName='',$userPassword=''):array;
 
     function resource(): array
     {
@@ -20,8 +12,9 @@ class Sqlbatis{
             'errMessage'=>'',
             'resource'=>null
         ];
+        $resource = $this->construct();
         try {
-            $dataBaseHost = new PDO($this->connectData,$this->userName,$this->userPassword);
+            $dataBaseHost = new PDO($resource['connectData'],$resource['userName'],$resource['userPassword']);
             $dataBaseHost->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
             $arr['resource']=$dataBaseHost;
         }catch (PDOException $exception){
