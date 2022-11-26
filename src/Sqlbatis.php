@@ -3,8 +3,9 @@
 namespace Gengbin\Sqlbatis;
 use PDO;
 use PDOException;
+
 abstract class Sqlbatis implements SqlbatisInterface {
-    abstract function construct($connectData='',$userName='',$userPassword=''):array;
+    abstract function construct($connectData='',$userName='',$userPassword=''):ConnectSource;
 
     function resource(): array
     {
@@ -15,7 +16,7 @@ abstract class Sqlbatis implements SqlbatisInterface {
         ];
         $resource = $this->construct();
         try {
-            $dataBaseHost = new PDO($resource['connectData'],$resource['userName'],$resource['userPassword']);
+            $dataBaseHost = new PDO($resource->getConnectData(),$resource->getUserName(),$resource->getUserPassword());
             $dataBaseHost->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
             $arr['resource']=$dataBaseHost;
         }catch (PDOException $exception){
@@ -29,11 +30,8 @@ abstract class Sqlbatis implements SqlbatisInterface {
     function query($sql=''): array
     {
         $mysql = $this->resource();
-        if($mysql['err']){
-            $mysql['sql']=$sql;
-            return $mysql;
-        }
-
+        $mysql['sql']=$sql;
+        if($mysql['err']) return $mysql;
         $result = $mysql['resource']->prepare($sql);
         $result->execute();
         try {
