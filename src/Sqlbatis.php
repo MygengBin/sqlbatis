@@ -2,6 +2,8 @@
 
 namespace Gengbin\Sqlbatis;
 use Gengbin\Sqlbatis\entity\SqlStrictEntity;
+use Gengbin\Sqlbatis\functionAbstract\SqlbatisInterface;
+use Gengbin\Sqlbatis\entity\ConnectSource;
 use PDO;
 use PDOException;
 
@@ -30,12 +32,13 @@ abstract class Sqlbatis implements SqlbatisInterface {
         $mysql->setSql($sql);
         if($mysql->getErr()) return $mysql;
         $result = $mysql->getResource()->prepare($sql);
-        $result->execute();
         try {
+            $result->execute();
             $mysql->setData($result->fetchAll((PDO::FETCH_ASSOC)));
         }catch (PDOException $exception){
             $mysql->setErr(1);
             $mysql->setResource($exception);
+            $mysql->setErrMessage($exception->getMessage());
         }
         return $mysql;
     }
@@ -45,11 +48,12 @@ abstract class Sqlbatis implements SqlbatisInterface {
         $mysql->setSql($sql);
         if($mysql->getErr()) return $mysql;
         try {
-            $mysql->setData($mysql->exec($sql));
+            $mysql->setData($mysql->getResource()->exec($sql));
         }
         catch (PDOException $e){
             $mysql->setErr(1);
             $mysql->setResource($e);
+            $mysql->setErrMessage($e->getMessage());
         }
         return $mysql;
     }

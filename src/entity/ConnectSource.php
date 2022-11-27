@@ -1,5 +1,5 @@
 <?php
-namespace Gengbin\Sqlbatis;
+namespace Gengbin\Sqlbatis\entity;
 class ConnectSource{
     private $connectData='';
     private $userName='';

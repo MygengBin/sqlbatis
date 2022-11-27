@@ -1,8 +1,8 @@
 <?php
 require_once '../vendor/autoload.php';
 use Gengbin\Sqlbatis\Sqlbatis;
-use Gengbin\Sqlbatis\ConnectSource;
-class  search extends Sqlbatis{
+use Gengbin\Sqlbatis\entity\ConnectSource;
+class search extends Sqlbatis{
 
     function construct($connectData = '', $userName = '', $userPassword = ''):ConnectSource
     {
@@ -14,4 +14,5 @@ class  search extends Sqlbatis{
     }
 }
 $a = new search();
-var_dump($a->query('select * from anonymous_visit')->getData()[0]);
+$result = $a->exec("insert into anon123ymous_visit(path,http_user_agent,referrer) value('','','')");
+var_dump($result);

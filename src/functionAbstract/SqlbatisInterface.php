@@ -1,8 +1,9 @@
 <?php
 
 
-namespace Gengbin\Sqlbatis;
+namespace Gengbin\Sqlbatis\functionAbstract;
 
+use Gengbin\Sqlbatis\entity\ConnectSource;
 use Gengbin\Sqlbatis\entity\SqlStrictEntity;
 
 interface SqlbatisInterface
