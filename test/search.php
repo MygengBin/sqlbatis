@@ -14,4 +14,4 @@ class  search extends Sqlbatis{
     }
 }
 $a = new search();
-var_dump($a->query('select * from word_article'));
+var_dump($a->query('select * from anonymous_visit')->getData()[0]);

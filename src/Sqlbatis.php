@@ -1,62 +1,56 @@
 <?php
 
 namespace Gengbin\Sqlbatis;
+use Gengbin\Sqlbatis\entity\SqlStrictEntity;
 use PDO;
 use PDOException;
 
 abstract class Sqlbatis implements SqlbatisInterface {
     abstract function construct($connectData='',$userName='',$userPassword=''):ConnectSource;
 
-    function resource(): array
+    function resource(): SqlStrictEntity
     {
-        $arr=[
-            'err'=>null,
-            'errMessage'=>'',
-            'resource'=>null
-        ];
+        $strict = new SqlStrictEntity();
         $resource = $this->construct();
         try {
             $dataBaseHost = new PDO($resource->getConnectData(),$resource->getUserName(),$resource->getUserPassword());
             $dataBaseHost->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-            $arr['resource']=$dataBaseHost;
+            $strict->setResource($dataBaseHost);
         }catch (PDOException $exception){
-            $arr['errMessage'] = $exception->getMessage();
-            $arr['resource'] = $exception;
+            $strict->setErrMessage($exception->getMessage());
+            $strict->setResource($exception);
         } finally {
             $dataBaseHost=null;
         }
-        return $arr;
+        return $strict;
     }
-    function query($sql=''): array
+    function query($sql=''): SqlStrictEntity
     {
         $mysql = $this->resource();
-        $mysql['sql']=$sql;
-        if($mysql['err']) return $mysql;
-        $result = $mysql['resource']->prepare($sql);
+        $mysql->setSql($sql);
+        if($mysql->getErr()) return $mysql;
+        $result = $mysql->getResource()->prepare($sql);
         $result->execute();
         try {
-            $mysql['data'] = $result->fetchAll((PDO::FETCH_ASSOC));
+            $mysql->setData($result->fetchAll((PDO::FETCH_ASSOC)));
         }catch (PDOException $exception){
-            $mysql['err'] =1;
-            $mysql['resource'] =$exception;
+            $mysql->setErr(1);
+            $mysql->setResource($exception);
         }
         return $mysql;
     }
-    function exec($sql): array
+    function exec($sql): SqlStrictEntity
     {
         $mysql = $this->resource();
-        if($mysql['err']){
-            $mysql['sql']=$sql;
-            return $mysql;
-        }
-        $data=[];
+        $mysql->setSql($sql);
+        if($mysql->getErr()) return $mysql;
         try {
-            $data['data']= $mysql->exec($sql);
+            $mysql->setData($mysql->exec($sql));
         }
         catch (PDOException $e){
-            $data['err']= 1;
-            $data['resource']= $e;
+            $mysql->setErr(1);
+            $mysql->setResource($e);
         }
-        return $data;
+        return $mysql;
     }
 }
